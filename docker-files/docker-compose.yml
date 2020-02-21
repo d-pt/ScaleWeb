@@ -1,0 +1,33 @@
+version: "3"
+services:
+  web:
+    #image: epct-external
+    build:
+      context: ./..
+      dockerfile: docker-files/Dockerfile
+      args:
+        - APP_NAME=ScaleWeb
+
+
+    environment:
+      - JAVA_OPTS=-agentlib:jdwp=transport=dt_socket,server=y,address=8000,suspend=n
+      - REDIS_HOST=redis
+
+    command: catalina.sh run
+    #depends_on:
+    #  - es
+    ports:
+      - 8080:8080
+      - 5005:8000
+    #links:
+    #  - redis
+    volumes:
+      - ../target/ScaleWeb/:/usr/local/tomcat/webapps/ScaleWeb/
+  redis:
+    image: "redis:alpine"
+    ports:
+      - 6379:6379
+
+#volumes:
+#  esdata1:
+#    driver: local
